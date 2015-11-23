@@ -1,0 +1,31 @@
+format_version: 1.1.0
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+  - XAMARIN_PROJECT:
+  - BITRISE_XAMARIN_CONFIGURATION:
+  - BITRISE_XAMARIN_PLATFORM:
+  - COMMAND:
+
+workflows:
+  test:
+    steps:
+    - change-workdir:
+        title: Change workdir
+        run_if: true
+        inputs:
+        - path: $HOME/Develop/bitrise/sample-apps/xamarin/xamarin-cross-platform
+    - path::./:
+        inputs:
+        - xamarin_project: $XAMARIN_PROJECT
+        - xamarin_configuration: $BITRISE_XAMARIN_CONFIGURATION
+        - xamarin_platform: $BITRISE_XAMARIN_PLATFORM
+        - is_clean_build: yes
+        - command: archive
+    - script:
+        inputs:
+        - content: |-
+            echo "BITRISE_APK_PATH: ${BITRISE_APK_PATH}"
+            echo "BITRISE_IPA_PATH: ${BITRISE_IPA_PATH}"
+            echo "BITRISE_DSYM_PATH: ${BITRISE_DSYM_PATH}"

@@ -1,0 +1,55 @@
+title: Xamarin builder
+summary: Xamarin builder
+description: |-
+  Xamarin builder
+website: https://github.com/gkiki90/steps-xamarin-builder
+source_code_url: https://github.com/gkiki90/steps-xamarin-builder
+support_url: https://github.com/gkiki90/steps-xamarin-builder/issues
+host_os_tags:
+  - osx-10.10
+project_type_tags: []
+type_tags:
+  - xamarin
+is_requires_admin_user: false
+is_always_run: false
+is_skippable: false
+inputs:
+  - xamarin_project:
+    opts:
+      title: Path to Xamarin Project
+      description: |
+        Path to Xamarin Project
+      is_required: true
+      is_expand: true
+  - xamarin_configuration:
+    opts:
+      title: Xamarin project configuration
+      description: |
+        Xamarin project configuration
+      is_required: true
+      is_expand: true
+  - xamarin_platform:
+    opts:
+      title: Xamarin platform
+      description: |
+        Xamarin platform
+      is_required: true
+      is_expand: true
+  - is_clean_build: yes
+    opts:
+      title: "Do a clean before the build?"
+      value_options:
+        - yes
+        - no
+      is_required: true
+      is_expand: true
+      is_dont_change_value: false
+  - command: build
+    opts:
+      title: "Command to perform"
+      value_options:
+        - build
+        - archive
+      is_required: true
+      is_expand: true
+      is_dont_change_value: false
