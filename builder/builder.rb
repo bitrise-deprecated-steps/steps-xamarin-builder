@@ -43,6 +43,8 @@ def archive_project!(api, project, configuration, platform)
 end
 
 def archive_ios_project!(builder, project, configuration, platform)
+  output_path = File.join('bin', platform, configuration)
+
   params = []
   case builder
   when 'xbuild'
@@ -52,6 +54,7 @@ def archive_ios_project!(builder, project, configuration, platform)
     params << "/p:Configuration=\"#{configuration}\""
     params << "/p:Platform=\"#{platform}\""
     params << '/p:BuildIpa=true'
+    params << "/p:OutputPath=\"#{output_path}/\""
   when 'mdtool'
     params << "#{@mdtool}"
     params << '-v build'
