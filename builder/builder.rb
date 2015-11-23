@@ -17,12 +17,15 @@ def clean_project!(project, configuration, platform)
 end
 
 def build_project!(project, configuration, platform)
+  output_path = File.join('bin', platform, configuration)
+
   params = []
   params << 'xbuild'
   params << "\"#{project}\""
   params << '/t:Build'
   params << "/p:Configuration=\"#{configuration}\""
   params << "/p:Platform=\"#{platform}\""
+  params << "/p:OutputPath=\"#{output_path}/\""
 
   puts "#{params.join(' ')}"
   system("#{params.join(' ')}")
