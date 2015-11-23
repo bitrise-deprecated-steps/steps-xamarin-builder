@@ -17,12 +17,15 @@ def clean_project!(project, configuration, platform)
 end
 
 def build_project!(project, configuration, platform)
+  output_path = File.join('bin', platform, configuration)
+
   params = []
   params << 'xbuild'
   params << "\"#{project}\""
   params << '/t:Build'
   params << "/p:Configuration=\"#{configuration}\""
   params << "/p:Platform=\"#{platform}\""
+  params << "/p:OutputPath=\"#{output_path}/\""
 
   puts "#{params.join(' ')}"
   system("#{params.join(' ')}")
@@ -43,6 +46,8 @@ def archive_project!(api, project, configuration, platform)
 end
 
 def archive_ios_project!(builder, project, configuration, platform)
+  output_path = File.join('bin', platform, configuration)
+
   params = []
   case builder
   when 'xbuild'
@@ -52,6 +57,7 @@ def archive_ios_project!(builder, project, configuration, platform)
     params << "/p:Configuration=\"#{configuration}\""
     params << "/p:Platform=\"#{platform}\""
     params << '/p:BuildIpa=true'
+    params << "/p:OutputPath=\"#{output_path}/\""
   when 'mdtool'
     params << "#{@mdtool}"
     params << '-v build'
@@ -90,12 +96,15 @@ end
 def archive_android_project!(project, configuration, platform, sign_apk)
   # /t:SignAndroidPackage -> generate a signed and unsigned APK
   # /t:PackageForAndroid -> generate a unsigned APK
+  output_path = File.join('bin', platform, configuration)
+
   params = ['xbuild']
   params << "\"#{project}\""
   params << "/p:Configuration=\"#{configuration}\""
   params << "/p:Platform=\"#{platform}\""
   params << '/t:SignAndroidPackage' if sign_apk
   params << '/t:PackageForAndroid' unless sign_apk
+  params << "/p:OutputPath=\"#{output_path}/\""
 
   puts "#{params.join(' ')}"
   system("#{params.join(' ')}")
