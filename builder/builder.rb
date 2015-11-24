@@ -115,7 +115,7 @@ end
 
 def export_apk(project, configuration)
   project_dir = File.dirname(project)
-  apk = Dir[File.join(project_dir, 'bin', configuration, '/**/', '*.apk')].first
+  apk = Dir[File.join(project_dir, 'bin', '**', configuration, '**', '*.apk')].first
   fail_with_message('No generated apk file found') unless apk
   puts "(i) apk found at path: #{apk}"
 
