@@ -132,7 +132,12 @@ end
 def export_ipa(project, configuration, platform)
   project_dir = File.dirname(project)
   ipa = Dir[File.join(project_dir, 'bin', platform, configuration, '/*.ipa')].first
-  fail_with_message('No generated ipa file found') unless ipa
+  
+  unless ipa do
+    error_with_message('No generated ipa file found')
+    return
+  end
+
   puts "(i) ipa found at path: #{ipa}"
 
   temp_path = Pathname.new(ipa).realpath.to_s
