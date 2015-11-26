@@ -91,7 +91,7 @@ when 'archive'
     solution['projects'].each do |project|
       mapping = project['mapping']
       config = mapping["#{options[:configuration]}|#{options[:platform]}"]
-      fail_with_message("No mapping found for config: #{options[:configuration]}|#{options[:platform]}")
+      fail_with_message("No mapping found for config: #{options[:configuration]}|#{options[:platform]}") unless config
 
       configuration, platform = config.split('|')
 
