@@ -121,7 +121,7 @@ def export_apk(project, configuration)
 
   temp_path = Pathname.new(apk).realpath.to_s
   full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
-  FileUtils.mv(temp_path, full_path)
+  FileUtils.cp(temp_path, full_path)
 
   puts ''
   puts "(i) The apk is now available at: #{full_path}"
@@ -133,13 +133,14 @@ def export_ipa(project, configuration, platform)
   project_dir = File.dirname(project)
   ipa = Dir[File.join(project_dir, 'bin', platform, configuration, '/*.ipa')].first
   fail_with_message('No generated ipa file found') unless ipa
+
   puts "(i) ipa found at path: #{ipa}"
 
   temp_path = Pathname.new(ipa).realpath.to_s
   temp_dir = File.dirname(temp_path)
   full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
   unless File.exists?(full_path)
-    FileUtils.mv(temp_path, full_path)
+    FileUtils.cp(temp_path, full_path)
 
     puts ''
     puts "(i) The IPA is now available at: #{full_path}"
@@ -158,7 +159,7 @@ def export_ipa(project, configuration, platform)
 
       temp_path = Pathname.new(dsym_zip).realpath.to_s
       full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
-      FileUtils.mv(temp_path, full_path)
+      FileUtils.cp(temp_path, full_path)
 
       puts ''
       puts "(i) The dSYM is now available at: #{full_path}"

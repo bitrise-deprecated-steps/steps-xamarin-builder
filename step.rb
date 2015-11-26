@@ -90,7 +90,10 @@ when 'archive'
     solution = analyze_solution(options[:project])
     solution['projects'].each do |project|
       mapping = project['mapping']
-      configuration, platform = mapping["#{options[:configuration]}|#{options[:platform]}"].split("|")
+      config = mapping["#{options[:configuration]}|#{options[:platform]}"]
+      fail_with_message("No mapping found for config: #{options[:configuration]}|#{options[:platform]}") unless config
+
+      configuration, platform = config.split('|')
 
       run(options[:command], project['path'], configuration, platform, options[:clean_build]) if configuration && platform
     end
