@@ -121,7 +121,7 @@ def export_apk(project, configuration)
 
   temp_path = Pathname.new(apk).realpath.to_s
   full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
-  FileUtils.mv(temp_path, full_path)
+  FileUtils.cp(temp_path, full_path)
 
   puts ''
   puts "(i) The apk is now available at: #{full_path}"
@@ -144,7 +144,7 @@ def export_ipa(project, configuration, platform)
   temp_dir = File.dirname(temp_path)
   full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
   unless File.exists?(full_path)
-    FileUtils.mv(temp_path, full_path)
+    FileUtils.cp(temp_path, full_path)
 
     puts ''
     puts "(i) The IPA is now available at: #{full_path}"
@@ -163,7 +163,7 @@ def export_ipa(project, configuration, platform)
 
       temp_path = Pathname.new(dsym_zip).realpath.to_s
       full_path = File.join(ENV['BITRISE_DEPLOY_DIR'], File.basename(temp_path))
-      FileUtils.mv(temp_path, full_path)
+      FileUtils.cp(temp_path, full_path)
 
       puts ''
       puts "(i) The dSYM is now available at: #{full_path}"
