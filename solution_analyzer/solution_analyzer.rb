@@ -1,11 +1,13 @@
 require_relative '../logger/logger'
 
 def get_xamarin_api(project_path)
-  lines = File.readlines(project_path)
+  if File.exists? project_path
+    lines = File.readlines(project_path)
 
-  return 'Mono.Android' if lines.grep(/Include="Mono.Android"/).size > 0
-  return 'monotouch' if lines.grep(/Include="monotouch"/).size > 0
-  return 'Xamarin.iOS' if lines.grep(/Include="Xamarin.iOS"/).size > 0
+    return 'Mono.Android' if lines.grep(/Include="Mono.Android"/).size > 0
+    return 'monotouch' if lines.grep(/Include="monotouch"/).size > 0
+    return 'Xamarin.iOS' if lines.grep(/Include="Xamarin.iOS"/).size > 0
+  end
   return nil
 end
 
