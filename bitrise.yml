@@ -6,7 +6,6 @@ app:
   - XAMARIN_PROJECT: $XAMARIN_PROJECT
   - BITRISE_XAMARIN_CONFIGURATION: $BITRISE_XAMARIN_CONFIGURATION
   - BITRISE_XAMARIN_PLATFORM: $BITRISE_XAMARIN_PLATFORM
-  - COMMAND: $COMMAND
 
 workflows:
   test:
@@ -15,21 +14,22 @@ workflows:
         title: Change workdir
         run_if: true
         inputs:
-        - path: $HOME/Develop/bitrise/sample-apps/xamarin/xamarin-cross-platform
+        - path: ./_tmp
     - path::./:
+        title: Step test
         inputs:
         - xamarin_project: $XAMARIN_PROJECT
         - xamarin_configuration: $BITRISE_XAMARIN_CONFIGURATION
         - xamarin_platform: $BITRISE_XAMARIN_PLATFORM
-        - is_clean_build: yes
-        - command: archive
+        - is_clean_build: no
     - script:
+        title: Output test
         inputs:
         - content: |-
             echo "BITRISE_APK_PATH: ${BITRISE_APK_PATH}"
             echo "BITRISE_IPA_PATH: ${BITRISE_IPA_PATH}"
             echo "BITRISE_DSYM_PATH: ${BITRISE_DSYM_PATH}"
-            
+
   # ----------------------------------------------------------------
   # --- workflows to Share this step into a Step Library
   share-this-step:
