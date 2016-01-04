@@ -1,5 +1,27 @@
 require_relative '../logger/logger'
 
+def allowed_to_sign_android_project(project_path, configuration, platform)
+  # <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  config_regex = '<PropertyGroup Condition=" \'\$\(Configuration\)\|\$\(Platform\)\' == \'(?<config>.*)\' ">'
+  config = configuration + '|' + platform
+  related_config_start = false
+
+  File.open(project_path).each do |line|
+    match = line.match(config_regex)
+    if match && match.captures && match.captures.count == 1
+      found_config = match.captures[0]
+
+      related_config_start = (found_config == config)
+    end
+
+    next unless related_config_start
+
+    return true if line.include? '<AndroidKeyStore>True</AndroidKeyStore>'
+  end
+
+  return false
+end
+
 def get_xamarin_api(project_path)
   if File.file?(project_path)
     lines = File.readlines(project_path)

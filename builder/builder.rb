@@ -35,7 +35,8 @@ end
 def archive_project!(api, project, configuration, platform)
   case api
   when 'Mono.Android'
-    archive_android_project!(project, configuration, platform, false)
+    sign_apk = allowed_to_sign_android_project(project, configuration, platform)
+    archive_android_project!(project, configuration, platform, sign_apk)
   when 'monotouch'
     archive_ios_project!('mdtool', project, configuration, platform)
   when 'Xamarin.iOS'
