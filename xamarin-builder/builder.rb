@@ -3,19 +3,26 @@ require 'fileutils'
 
 require_relative './analyzer'
 
-MDTOOL_PATH = "\"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool\""
+# -----------------------
+# --- Constants
+# -----------------------
 
+MDTOOL_PATH = "\"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool\""
 XBUILD_NAME = 'xbuild'
 MDTOOL_NAME = 'mdtool'
 
-MONO_ANDROID_API_NAME = 'Mono.Android'
-MONOTOUCH_API_NAME = 'monotouch'
-XAMARIN_IOS_API_NAME = 'Xamarin.iOS'
+# -----------------------
+# --- Builder
+# -----------------------
 
-
-# define class Builder
 class Builder
   def initialize(project_path, configuration, platform)
+    fail 'Empty path provided' if project_path.to_s == ''
+    fail "File (#{project_path}) not exist" unless File.exist? project_path
+
+    fail 'No configuration provided' if configuration.to_s == ''
+    fail 'No platform provided' if platform.to_s == ''
+
     @project_path = project_path
     @configuration = configuration
     @platform = platform
@@ -23,54 +30,24 @@ class Builder
 
   def clean!
 
-    # Collect projects to clean
-
-    projects = []
-
-    if is_project_solution
-      solution = Analyzer.new(@project_path).analyze_solution
-      solution[:projects].each do |project|
-        mapping = project[:mapping]
-        config = mapping["#{@configuration}|#{@platform}"]
-        fail "No mapping found for config: #{@configuration}|#{@platform}" unless config
-
-        configuration, platform = config.split('|')
-        fail "No configuration, platform found for config: #{config}" unless configuration || platform
-
-        projects << {
-            path: project[:path],
-            configuration: configuration,
-            platform: platform
-        }
-      end
-    else
-      projects << {
-          path: @project_path,
-          configuration: @configuration,
-          platform: @platform
-      }
-    end
-
     # Collect project information
 
-    projects_to_clean= []
-
-    projects.each do |project_to_clean|
-      analyzer = Analyzer.new(project_to_clean[:path])
-
-      is_test = analyzer.test_project?
-      api = analyzer.xamarin_api
-
-      project_to_clean[:api] = api
-      project_to_clean[:is_test] = is_test
-
-      projects_to_clean << project_to_clean
+    projects_to_clean = []
+    if is_project_solution
+      projects_to_clean = SolutionAnalyzer.new(@project_path).collect_projects(@configuration, @platform)
+    else
+      projects_to_clean << ProjectAnalyzer.new(@project_path).analyze(@configuration, @platform)
     end
 
     # Clean projects
 
     projects_to_clean.each do |project_to_clean|
       command = generate_clean_command(project_to_clean)
+
+      puts
+      puts "command: #{command}"
+      puts
+
       system(command)
       fail 'Clean failed' unless $?.success?
     end
@@ -80,58 +57,11 @@ class Builder
 
     # Collect projects to build
 
-    projects = []
-
-    if is_project_solution
-      solution = Analyzer.new(@project_path).analyze_solution
-      solution[:projects].each do |project|
-        mapping = project[:mapping]
-        config = mapping["#{@configuration}|#{@platform}"]
-        fail "No mapping found for config: #{@configuration}|#{@platform}" unless config
-
-        configuration, platform = config.split('|')
-        fail "No configuration, platform found for config: #{config}" unless configuration || platform
-
-        projects << {
-            path: project[:path],
-            configuration: configuration,
-            platform: platform
-        }
-      end
-    else
-      projects << {
-          path: @project_path,
-          configuration: @configuration,
-          platform: @platform
-      }
-    end
-
-    # Collect project information
-
     projects_to_build = []
-
-    projects.each do |project_to_build|
-      analyzer = Analyzer.new(project_to_build[:path])
-
-      output_path = analyzer.output_path(project_to_build[:configuration], project_to_build[:platform])
-      is_test = analyzer.test_project?
-      api = analyzer.xamarin_api
-      build_ipa = false
-      if api == MONOTOUCH_API_NAME || api == XAMARIN_IOS_API_NAME
-        build_ipa = analyzer.allowed_to_build_ipa(project_to_build[:configuration], project_to_build[:platform])
-      end
-      sign_apk = false
-      if api == MONO_ANDROID_API_NAME
-        sign_apk = analyzer.allowed_to_sign_android(project_to_build[:configuration], project_to_build[:platform])
-      end
-
-      project_to_build[:api] = api
-      project_to_build[:output_path] = output_path
-      project_to_build[:is_test] = is_test
-      project_to_build[:build_ipa] = build_ipa
-      project_to_build[:sign_apk] = sign_apk
-
-      projects_to_build << project_to_build
+    if is_project_solution
+      projects_to_build = SolutionAnalyzer.new(@project_path).collect_projects(@configuration, @platform)
+    else
+      projects_to_build << ProjectAnalyzer.new(@project_path).analyze(@configuration, @platform)
     end
 
     # Build projects
@@ -140,9 +70,18 @@ class Builder
 
     projects_to_build.each do |project_to_build|
       command = generate_build_command(project_to_build)
+
+      puts
       puts "command: #{command}"
+      puts
+
       system(command)
       fail 'Build failed' unless $?.success?
+
+      # mdtool only creates .xcarchive, we need to manully export the .ipa file
+      if project_to_build[:api] == MONOTOUCH_API_NAME && project_to_build[:build_ipa]
+
+      end
 
       project_directory = File.dirname(project_to_build[:path])
       absolute_output_path = File.join(project_directory, '**', project_to_build[:output_path], '**')
@@ -251,6 +190,7 @@ class Builder
         project_hash[:path],
         '/t:Clean',
         "/p:Configuration=\"#{project_hash[:configuration]}\"",
+        "/p:OutputPath=\"#{project_hash[:output_path]}/\""
     ]
 
     cmd << "/p:Platform=\"#{project_hash[:platform]}\"" unless project_hash[:is_test]
