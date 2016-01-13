@@ -6,4 +6,6 @@ ruby "${THIS_SCRIPT_DIR}/step.rb" \
 	-p "${xamarin_project}" \
 	-c "${xamarin_configuration}" \
 	-l "${xamarin_platform}" \
-	-i "${is_clean_build}"
+	-i "${is_clean_build}" \
+	-e "${export_options_path}" \
+	-f "${platform_filter}"
