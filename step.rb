@@ -29,7 +29,37 @@ def to_bool(value)
   fail_with_message("Invalid value for Boolean: \"#{value}\"")
 end
 
-def export_xcarchive(export_options, path)
+def export_dsym(archive_path)
+  puts
+  puts '=> Exporting dSYM...'
+
+  archive_dsyms_folder = File.join(archive_path, 'dSYMs')
+  app_dsym_paths = Dir[File.join(archive_dsyms_folder, '*.app.dSYM')]
+  app_dsym_paths.each do |app_dsym_path|
+    puts " (i) .app.dSYM found: #{app_dsym_path}"
+  end
+
+  puts " (i) Found dSYM count: #{app_dsym_paths.count}"
+
+  if app_dsym_paths.count == 0
+    puts '* (i) **No dSYM found!**'
+  elsif app_dsym_paths.count > 1
+    puts '* (i) *More than one dSYM found!*'
+  else
+    app_dsym_path = app_dsym_paths[0]
+    puts "* dSYM found at: #{app_dsym_path}"
+
+    dsym_name = File.basename(app_dsym_path)
+    dsym_path = File.join(@deploy_dir, dsym_name)
+    FileUtils.cp_r(app_dsym_path, dsym_path)
+
+    puts ''
+    puts "(i) The dSYM is now available at: #{dsym_path}"
+    system("envman add --key BITRISE_DSYM_PATH --value #{dsym_path}")
+  end
+end
+
+def export_xcarchive(export_options, archive_path)
   puts
   puts '=> Exporting IPA...'
   export_options_path = export_options
@@ -54,7 +84,7 @@ def export_xcarchive(export_options, path)
 
     bundle_exec_command_params = ["BUNDLE_GEMFILE=#{gemfile_path} bundle exec ruby #{export_options_generator}"]
     bundle_exec_command_params << "-o \"#{export_options_path}\""
-    bundle_exec_command_params << "-a \"#{path}\""
+    bundle_exec_command_params << "-a \"#{archive_path}\""
     bundle_exec_command = bundle_exec_command_params.join(' ')
     puts
     puts bundle_exec_command
@@ -66,7 +96,7 @@ def export_xcarchive(export_options, path)
   temp_dir = Dir.mktmpdir('_bitrise_')
 
   export_command_params = ['xcodebuild -exportArchive']
-  export_command_params << "-archivePath \"#{path}\""
+  export_command_params << "-archivePath \"#{archive_path}\""
   export_command_params << "-exportPath \"#{temp_dir}\""
   export_command_params << "-exportOptionsPlist \"#{export_options_path}\""
   export_command = export_command_params.join(' ')
@@ -161,5 +191,6 @@ output.each do |_, project_output|
     export_apk(project_output[:apk])
   elsif project_output[:xcarchive]
     export_xcarchive(options[:export_options], project_output[:xcarchive])
+    export_dsym(project_output[:xcarchive])
   end
 end
