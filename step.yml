@@ -37,13 +37,12 @@ inputs:
       title: "Platform filter"
       description: |
         Filters which platform to build.
-        Format examples:
-        - "android"
-        - "ios"
-        - "android,ios"
-
         Leave it empty to build both android and ios.
       is_required: false
+      value_options:
+      - "android"
+      - "ios"
+      - "android,ios"
   - export_options_path:
     opts:
       title: "Export options path"
