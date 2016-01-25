@@ -3,7 +3,7 @@ summary: Xamarin builder
 description: |-
   Xamarin builder
 website: https://github.com/bitrise-steplib/steps-xamarin-builder
-source_code_url: https://github.com/bitrise-steplib/steps-xamarin-builder.git
+source_code_url: https://github.com/bitrise-steplib/steps-xamarin-builder
 support_url: https://github.com/bitrise-steplib/steps-xamarin-builder/issues
 host_os_tags:
   - osx-10.10
@@ -16,7 +16,7 @@ is_skippable: false
 inputs:
   - xamarin_project: $BITRISE_PROJECT_PATH
     opts:
-      title: Path to Xamarin Project
+      title: Path to Xamarin Solution
       description: |
         Path to Xamarin Project
       is_required: true
@@ -32,6 +32,13 @@ inputs:
       description: |
         Xamarin platform
       is_required: true
+  - platform_filter: "android,ios"
+    opts:
+      title: "Platform filter"
+      description: |
+        Filters which platform to build.
+        Leave it empty to build both android and ios.
+      is_required: false
   - is_clean_build: yes
     opts:
       title: "Do a clean before the build?"
@@ -39,3 +46,25 @@ inputs:
         - yes
         - no
       is_required: true
+  - export_options_path:
+    opts:
+      title: "Export options path"
+      description: |-
+        Used for Xcode version 7 and above.
+
+        Specifies a path to a plist file that configures archive exporting.
+        If empty, step generates these options based on provisioning profile,
+        with default values.
+
+        Auto generated export options available for export methods:
+        - app-store
+        - ad-hoc
+        - enterprise
+        - development
+
+        If step doesn't find export method based on provisioning profile, development will be use.
+
+        Call xcodebuild -help for available export options.
+      is_required: false
+      is_expand: true
+      is_dont_change_value: false
