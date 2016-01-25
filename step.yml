@@ -18,7 +18,7 @@ inputs:
     opts:
       title: Path to Xamarin Solution
       description: |
-        Path to Xamarin Project
+        Path to Xamarin Solution
       is_required: true
   - xamarin_configuration: $BITRISE_XAMARIN_CONFIGURATION
     opts:
@@ -37,15 +37,13 @@ inputs:
       title: "Platform filter"
       description: |
         Filters which platform to build.
+        Format examples:
+        - "android"
+        - "ios"
+        - "android,ios"
+
         Leave it empty to build both android and ios.
       is_required: false
-  - is_clean_build: yes
-    opts:
-      title: "Do a clean before the build?"
-      value_options:
-        - yes
-        - no
-      is_required: true
   - export_options_path:
     opts:
       title: "Export options path"
