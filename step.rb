@@ -107,7 +107,6 @@ options = {
     project: nil,
     configuration: nil,
     platform: nil,
-    clean_build: true,
     export_options: nil,
     platform_filter: nil
 }
@@ -117,7 +116,6 @@ parser = OptionParser.new do |opts|
   opts.on('-p', '--project path', 'Project') { |p| options[:project] = p unless p.to_s == '' }
   opts.on('-c', '--configuration config', 'Configuration') { |c| options[:configuration] = c unless c.to_s == '' }
   opts.on('-l', '--platform platform', 'Platform') { |l| options[:platform] = l unless l.to_s == '' }
-  opts.on('-i', '--clean build', 'Clean build') { |i| options[:clean_build] = false unless to_bool(i) }
   opts.on('-e', '--options export', 'Export options') { |e| options[:export_options] = e unless e.to_s == '' }
   opts.on('-f', '--filter platform', 'Platform filter') { |f| options[:platform_filter] = f unless f.to_s == '' }
   opts.on('-h', '--help', 'Displays Help') do
@@ -137,7 +135,6 @@ puts '========== Configs =========='
 puts " * project: #{options[:project]}"
 puts " * configuration: #{options[:configuration]}"
 puts " * platform: #{options[:platform]}"
-puts " * clean_build: #{options[:clean_build]}"
 puts " * export_options: #{options[:export_options]}"
 puts " * platform_filter: #{options[:platform_filter]}"
 
