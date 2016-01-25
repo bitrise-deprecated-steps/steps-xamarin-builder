@@ -32,7 +32,7 @@ inputs:
       description: |
         Xamarin platform
       is_required: true
-  - platform_filter: "android,ios"
+  - platform_filter: "ios,android"
     opts:
       title: "Platform filter"
       description: |
@@ -40,9 +40,9 @@ inputs:
         Leave it empty to build both android and ios.
       is_required: false
       value_options:
-      - "android"
       - "ios"
-      - "android,ios"
+      - "android"
+      - "ios,android"
   - export_options_path:
     opts:
       title: "Export options path"
