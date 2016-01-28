@@ -48,15 +48,30 @@ def export_dsym(archive_path)
   else
     app_dsym_path = app_dsym_paths[0]
     puts "* dSYM found at: #{app_dsym_path}"
+    if File.directory?(app_dsym_path)
+      dsym_zip_path = generate_dsym_zip(app_dsym_path)
 
-    dsym_name = File.basename(app_dsym_path)
-    dsym_path = File.join(@deploy_dir, dsym_name)
-    FileUtils.cp_r(app_dsym_path, dsym_path)
-
-    puts ''
-    puts "(i) The dSYM is now available at: #{dsym_path}"
-    system("envman add --key BITRISE_DSYM_PATH --value #{dsym_path}")
+      puts ''
+      puts "(i) The dSYM is now available at: #{dsym_zip_path}"
+      system("envman add --key BITRISE_DSYM_PATH --value #{dsym_zip_path}")
+    else
+      puts '*(i) *Found dSYM path is not a directory!*'
+    end
   end
+end
+
+def generate_dsym_zip(dsym_path)
+  puts '=> Generating zip for dSym'
+
+  dsym_parent_folder = File.dirname(dsym_path)
+  dsym_fold_name = File.basename(dsym_path)
+  # cd into dSYM parent to not to store full
+  #  paths in the ZIP
+  dsym_zip_path = File.join(@deploy_dir, "#{dsym_fold_name}.zip")
+  Dir.chdir(dsym_parent_folder) do
+    raise 'Generating zip for dSym failed' unless system("/usr/bin/zip -rTy #{dsym_zip_path} #{dsym_fold_name}")
+  end
+  dsym_zip_path
 end
 
 def export_xcarchive(export_options, archive_path)
