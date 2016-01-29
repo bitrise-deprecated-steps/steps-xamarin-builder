@@ -308,8 +308,8 @@ class Analyzer
       if parse_solution_configs
         match = line.match(REGEX_SOLUTION_GLOBAL_SOLUTION_CONFIG)
         if match != nil && match.captures != nil && match.captures.count == 2
-          configuration =  match.captures[0].strip.delete(' ')
-          platform = match.captures[1].strip.delete(' ')
+          configuration =  match.captures[0]
+          platform = match.captures[1]
           (@solution[:configs] ||= []) << "#{configuration}|#{platform}"
         end
       end
@@ -325,10 +325,11 @@ class Analyzer
         match = line.match(REGEX_SOLUTION_GLOBAL_PROJECT_CONFIG)
         if match != nil && match.captures != nil && match.captures.count == 5
           project_id = match.captures[0]
-          solution_configuration = match.captures[1].strip.delete(' ')
-          solution_platform = match.captures[2].strip.delete(' ')
-          project_configuration = match.captures[3].strip.delete(' ')
-          project_platform = match.captures[4].strip.delete(' ')
+          solution_configuration = match.captures[1]
+          solution_platform = match.captures[2]
+          project_configuration = match.captures[3]
+          project_platform = match.captures[4]
+          project_platform = "AnyCPU" if project_platform.equals? 'Any CPU' # Fix MS bug
 
           project = project_with_id(project_id)
           (project[:mappings] ||= {})["#{solution_configuration}|#{solution_platform}"] = "#{project_configuration}|#{project_platform}"
@@ -405,8 +406,8 @@ class Analyzer
 
       match = line.match(REGEX_PROJECT_PROPERTY_GROUP_WITH_CONDITION)
       if match != nil && match.captures != nil && match.captures.count == 2
-        configuration = match.captures[0].strip.delete(' ')
-        platform = match.captures[1].strip.delete(' ')
+        configuration = match.captures[0]
+        platform = match.captures[1]
         project_config = "#{configuration}|#{platform}"
 
         (project[:configs] ||= {})[project_config] = {}
