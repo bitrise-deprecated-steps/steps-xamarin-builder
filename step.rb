@@ -194,8 +194,8 @@ fail_with_message('No platform environment found') unless options[:platform]
 builder = Builder.new(options[:project], options[:configuration], options[:platform], options[:platform_filter])
 begin
   builder.build
-rescue
-  fail_with_message('Build failed')
+rescue => ex
+  fail_with_message("Build failed: #{ex}")
 end
 
 
