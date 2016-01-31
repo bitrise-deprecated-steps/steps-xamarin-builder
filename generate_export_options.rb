@@ -82,28 +82,24 @@ end
 parser.parse!
 
 fail_with_message('export_options_path not specified') unless options[:export_options_path]
-puts "(i) export_options_path: #{options[:export_options_path]}"
+puts "export_options_path: #{options[:export_options_path]}"
 
 fail_with_message('archive_path not specified') unless options[:archive_path]
-puts "(i) archive_path: #{options[:archive_path]}"
+puts "archive_path: #{options[:archive_path]}"
 
 puts
-puts '==> Collect infos from mobileprovision'
+puts "\e[34mCollect infos from mobileprovision\e[0m"
 
 mobileprovision_content = collect_provision_info(options[:archive_path])
 # team_id = mobileprovision_content['TeamIdentifier'].first
 method = export_method(mobileprovision_content)
 
-puts
-puts '==> Create export options'
 
 export_options = {}
-# export_options[:teamID] = team_id unless team_id.nil?
 export_options[:method] = method unless method.nil?
-
 puts
-puts " (i) export_options: #{export_options}"
+puts "\e[34mCreating export options for export type: #{export_options[:method]}\e[0m"
+
 plist_content = Plist::Emit.dump(export_options)
-puts " (i) plist_content: #{plist_content}"
-puts " (i) saving into file: #{options[:export_options_path]}"
+puts "Plist saved at #{options[:export_options_path]}"
 File.write(options[:export_options_path], plist_content)
