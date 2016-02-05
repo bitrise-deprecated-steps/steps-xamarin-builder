@@ -52,6 +52,11 @@ class Analyzer
       when SOLUTION
         analyze_solution(@path)
       when PROJECT
+        puts
+        puts "\e[32mYou are trying to build a project file at path #{@path}\e[0m"
+        puts "You should specify the solution path and set the type of the project you would like to build: [iOS|Android]"
+        puts
+        raise "Unsupported type detected"
     end
 
     @solution[:projects].each do |project|
@@ -65,11 +70,11 @@ class Analyzer
     puts @solution
   end
 
-  def build_solution_command(config)
+  def build_solution_command(config, platform)
     [
         MDTOOL_PATH,
         'build',
-        "\"-c:#{config}\"",
+        "\"-c:#{config}|#{platform}\"",
         @solution[:path]
     ].join(' ')
   end
