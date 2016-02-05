@@ -51,7 +51,7 @@ def export_dsym(archive_path)
 
       puts
       puts "Archived dSYM is now available at: #{dsym_zip_path}"
-      system("envman add --key BITRISE_DSYM_PATH --value #{dsym_zip_path}")
+      system("envman add --key BITRISE_DSYM_PATH --value \"#{dsym_zip_path}\"")
     end
   end
 end
@@ -140,7 +140,7 @@ def export_xcarchive(export_options, archive_path)
 
   puts
   puts "IPA is now available at: #{ipa_path}"
-  system("envman add --key BITRISE_IPA_PATH --value #{ipa_path}")
+  system("envman add --key BITRISE_IPA_PATH --value \"#{ipa_path}\"")
 end
 
 def export_apk(path)
@@ -150,7 +150,7 @@ def export_apk(path)
 
   puts
   puts "Apk is now available at: #{apk_path}"
-  system("envman add --key BITRISE_APK_PATH --value #{apk_path}")
+  system("envman add --key BITRISE_APK_PATH --value \"#{apk_path}\"")
 end
 
 # -----------------------
