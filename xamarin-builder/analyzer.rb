@@ -100,11 +100,19 @@ class Analyzer
 
           build_commands << [
               MDTOOL_PATH,
-              generate_archive ? 'archive' : 'build',
+              'build',
               "\"-c:#{mdtool_configuration(project_configuration)}\"",
               "\"#{@solution[:path]}\"",
               "\"-p:#{project[:name]}\""
           ].join(' ')
+
+          build_commands << [
+              MDTOOL_PATH,
+              'archive',
+              "\"-c:#{mdtool_configuration(project_configuration)}\"",
+              "\"#{@solution[:path]}\"",
+              "\"-p:#{project[:name]}\""
+          ].join(' ') if generate_archive
         when 'android'
           next unless project_type_filter.include? 'android'
           next unless project[:android_application]
