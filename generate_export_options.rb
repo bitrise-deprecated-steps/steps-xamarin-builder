@@ -2,8 +2,10 @@ require 'optparse'
 require 'plist'
 require 'json'
 
+require_relative 'xamarin-builder/api'
+
 # -----------------------
-# --- functions
+# --- Functions
 # -----------------------
 
 def fail_with_message(message)
@@ -11,15 +13,16 @@ def fail_with_message(message)
   exit(1)
 end
 
-def collect_provision_info(archive_path)
+def collect_provision_info(archive_path, target_os)
   applications_path = File.join(archive_path, '/Products/Applications')
-  puts File.join(applications_path, '*.app/embedded.mobileprovision')
-  mobileprovision_path = Dir[File.join(applications_path, '*.app/embedded.mobileprovision')].first
+  signing_identity_path = target_os.eql?(Api::IOS) ? '*.app/embedded.mobileprovision' : '*.app/Contents/embedded.provisionprofile'
+  puts File.join(applications_path, signing_identity_path)
+  provision_path = Dir[File.join(applications_path, signing_identity_path)].first
 
-  fail_with_message('No mobileprovision_path found') if mobileprovision_path.nil?
+  fail_with_message('No provision_path found') if provision_path.nil?
 
   content = {}
-  plist = Plist.parse_xml(`security cms -D -i "#{mobileprovision_path}"`)
+  plist = Plist.parse_xml(`security cms -D -i "#{provision_path}"`)
 
   plist.each do |key, value|
     next if key == 'DeveloperCertificates'
@@ -59,7 +62,7 @@ def export_method(mobileprovision_content)
 end
 
 # -----------------------
-# --- main
+# --- Main
 # -----------------------
 
 puts
@@ -67,13 +70,15 @@ puts
 # Input validation
 options = {
   export_options_path: nil,
-  archive_path: nil
+  archive_path: nil,
+  target_os: nil
 }
 
 parser = OptionParser.new do|opts|
   opts.banner = 'Usage: step.rb [options]'
   opts.on('-o', '--export_options_path path', 'Export options path') { |o| options[:export_options_path] = o unless o.to_s == '' }
   opts.on('-a', '--archive_path path', 'Archive path') { |a| options[:archive_path] = a unless a.to_s == '' }
+  opts.on('-t', '--target_os string', 'Target operating system(ios or mac)') { |t| options[:target_os] = t unless t.to_s == '' }
   opts.on('-h', '--help', 'Displays Help') do
     puts opts
     exit
@@ -87,16 +92,23 @@ puts "export_options_path: #{options[:export_options_path]}"
 fail_with_message('archive_path not specified') unless options[:archive_path]
 puts "archive_path: #{options[:archive_path]}"
 
-puts
-puts "\e[34mCollect infos from mobileprovision\e[0m"
+fail_with_message('target_os not specified') unless options[:target_os]
+puts "target_os: #{options[:target_os]}"
 
-mobileprovision_content = collect_provision_info(options[:archive_path])
+puts
+puts "\e[34mCollect provision info\e[0m"
+
+mobileprovision_content = collect_provision_info(options[:archive_path], options[:target_os])
 # team_id = mobileprovision_content['TeamIdentifier'].first
 method = export_method(mobileprovision_content)
 
 
 export_options = {}
 export_options[:method] = method unless method.nil?
+
+# explicitly set this option to false for Xamarin.Mac projects since they have no support of dSYMs
+export_options[:uploadSymbols] = 'NO' if options[:target_os].eql?(Api::MAC)
+
 puts
 puts "\e[34mCreating export options for export type: #{export_options[:method]}\e[0m"
 

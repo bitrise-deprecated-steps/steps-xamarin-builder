@@ -32,7 +32,7 @@ inputs:
       description: |
         Xamarin platform
       is_required: true
-  - platform_filter: "ios,android"
+  - platform_filter: "ios,android,mac"
     opts:
       title: "Platform filter"
       description: |
@@ -42,7 +42,10 @@ inputs:
       value_options:
       - "ios"
       - "android"
+      - "mac"
       - "ios,android"
+      - "ios,mac"
+      - "android,mac"
   - export_options_path:
     opts:
       title: "Export options path"
