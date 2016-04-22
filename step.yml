@@ -46,6 +46,7 @@ inputs:
       - "ios,android"
       - "ios,mac"
       - "android,mac"
+      - "ios,android,mac"
   - export_options_path:
     opts:
       title: "Export options path"
