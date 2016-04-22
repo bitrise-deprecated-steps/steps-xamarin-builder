@@ -107,7 +107,10 @@ export_options = {}
 export_options[:method] = method unless method.nil?
 
 # explicitly set this option to false for Xamarin.Mac projects since they have no support of dSYMs
-export_options[:uploadSymbols] = 'NO' if options[:target_os].eql?(Api::MAC)
+if options[:target_os].eql?(Api::MAC)
+  export_options[:uploadSymbols] = 'NO'
+  puts "Warning: Skipping dSYMs upload not supported by Xamarin.Mac OS projects"
+end
 
 puts
 puts "\e[34mCreating export options for export type: #{export_options[:method]}\e[0m"
