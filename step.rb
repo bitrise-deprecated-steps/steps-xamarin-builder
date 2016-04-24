@@ -3,6 +3,7 @@ require 'fileutils'
 require 'tmpdir'
 
 require_relative 'xamarin-builder/builder'
+require_relative 'xamarin-builder/api'
 
 # -----------------------
 # --- Constants
@@ -70,9 +71,11 @@ def generate_dsym_zip(dsym_path)
   dsym_zip_path
 end
 
-def export_xcarchive(export_options, archive_path)
+def export_xcarchive(export_options, archive_path, target_os)
+  package_type = target_os.eql?(Api::IOS) ? 'IPA' : 'PKG'
+
   puts
-  puts "\e[34mExporting IPA from archive at path: #{archive_path}\e[0m"
+  puts "\e[34mExporting #{package_type} from archive at path: #{archive_path}\e[0m"
 
   export_options_path = export_options
   unless export_options_path
@@ -94,7 +97,6 @@ def export_xcarchive(export_options, archive_path)
     success = system(bundle_install_command.join(' '))
     fail_with_message('Failed to create export options (required gem install failed)') unless $?.success?
 
-
     #  Bundle exec
     export_options_path = File.join(@deploy_dir, 'export_options.plist')
     export_options_generator = File.join(current_dir, 'generate_export_options.rb')
@@ -108,6 +110,7 @@ def export_xcarchive(export_options, archive_path)
     ]
     bundle_exec_command << "-o \"#{export_options_path}\""
     bundle_exec_command << "-a \"#{archive_path}\""
+    bundle_exec_command << "-t \"#{target_os}\""
 
     puts
     puts "\e[34m#{bundle_exec_command.join(' ')}\e[0m"
@@ -115,7 +118,7 @@ def export_xcarchive(export_options, archive_path)
     fail_with_message('Failed to create export options (required gem install failed)') unless $?.success?
   end
 
-  # Export ipa
+  # Export ipa/pkg
   temp_dir = Dir.mktmpdir('_bitrise_')
 
   export_command = [
@@ -129,18 +132,20 @@ def export_xcarchive(export_options, archive_path)
   puts
   puts "\e[34m#{export_command.join(' ')}\e[0m"
   success = system(export_command.join(' '))
-  fail_with_message('Failed to export IPA') unless $?.success?
+  fail_with_message("Failed to export #{package_type}") unless $?.success?
 
-  temp_ipa_path = Dir[File.join(temp_dir, '*.ipa')].first
-  fail_with_message('No generated ipa found') unless temp_ipa_path
+  package_extension = target_os.eql?(Api::IOS) ? '*.ipa' : '*.pkg'
+  temp_package_path = Dir[File.join(temp_dir, package_extension)].first
+  fail_with_message("No generated #{package_type} found") unless temp_package_path
 
-  ipa_name = File.basename(temp_ipa_path)
-  ipa_path = File.join(@deploy_dir, ipa_name)
-  FileUtils.cp(temp_ipa_path, ipa_path)
+  package_name = File.basename(temp_package_path)
+  package_path = File.join(@deploy_dir, package_name)
+  FileUtils.cp(temp_package_path, package_path)
 
   puts
-  puts "IPA is now available at: #{ipa_path}"
-  system("envman add --key BITRISE_IPA_PATH --value \"#{ipa_path}\"")
+  puts "#{package_type} is now available at: #{package_path}"
+  env_var_key = target_os.eql?(Api::IOS) ? 'BITRISE_IPA_PATH' : 'BITRISE_PKG_PATH'
+  system("envman add --key #{env_var_key} --value \"#{package_path}\"")
 end
 
 def export_apk(path)
@@ -216,7 +221,7 @@ output.each do |_, project_output|
   if project_output[:apk]
     export_apk(project_output[:apk])
   elsif project_output[:xcarchive]
-    export_xcarchive(options[:export_options], project_output[:xcarchive])
+    export_xcarchive(options[:export_options], project_output[:xcarchive], project_output[:api])
     export_dsym(project_output[:xcarchive])
   end
 end
