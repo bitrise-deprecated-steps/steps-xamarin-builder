@@ -52,6 +52,10 @@ REGEX_PROJECT_ANDROID_PACKAGE_NAME = /<manifest.*package=\"(?<package_name>.*)\"
 REGEX_PROJECT_ANDROID_APPLICATION= /<AndroidApplication>True<\/AndroidApplication>/i
 REGEX_PROJECT_SIGN_ANDROID = /<AndroidKeyStore>True<\/AndroidKeyStore>/i
 
+#
+# Assembly references
+REGEX_PROJECT_REFERENCE_XAMARIN_UITEST = /Include="Xamarin.UITest"/i
+
 REGEX_ARCHIVE_DATE_TIME = /\s(.*[AM]|[PM]).*\./i
 
 class Analyzer
@@ -59,8 +63,7 @@ class Analyzer
       ios: "FEACFBD2-3405-455C-9665-78FE426C6842",
       mac: "A3F8F2AB-B479-4A4A-A458-A89E7DC349F1",
       tvos: "06FA79CB-D6CD-4721-BB4B-1BD202089C55",
-      android: "EFBA0AD7-5A72-4C68-AF49-83D382785DCF",
-      uitest: "B2E420A5-F7CC-4D22-B6E3-8F1FFD782A31"
+      android: "EFBA0AD7-5A72-4C68-AF49-83D382785DCF"
   }
 
   class << self
@@ -452,6 +455,11 @@ class Analyzer
       match = line.match(REGEX_PROJECT_TYPE_GUIDS)
       project[:api] = identify_project_api(match.captures.first) if match != nil && match.captures != nil && match.captures.count == 1
 
+      if project[:api].nil?
+        match = line.match(REGEX_PROJECT_REFERENCE_XAMARIN_UITEST)
+        (project[:api] ||= []) << Api::UITEST if match != nil
+      end
+
       # Referred projects
       match = line.match(REGEX_PROJECT_PROJECT_REFERENCE_END)
       referred_project_paths = nil if match
@@ -487,10 +495,10 @@ class Analyzer
       Api::ANDROID
     elsif project_type_guids.include? Analyzer.project_type_guids[:mac]
       Api::MAC
-    elsif project_type_guids.include? Analyzer.project_type_guids[:uitest]
-      Api::UITEST
     elsif project_type_guids.include? Analyzer.project_type_guids[:tvos]
       Api::TVOS
+    else
+      nil
     end
   end
 
