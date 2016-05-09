@@ -98,11 +98,18 @@ class Analyzer
           generate_archive = should_generate_archives?(project[:configs][project_configuration][:mtouch_arch])
 
           build_commands << mdtool_build_command(
-            generate_archive ? 'archive' : 'build',
+            'build',
             project_configuration,
             @solution[:path],
             project[:name]
           ).join(' ')
+
+          build_commands << mdtool_build_command(
+            'archive',
+            project_configuration,
+            @solution[:path],
+            project[:name]
+          ).join(' ') if generate_archive
         when 'android'
           next unless project_type_filter.include? 'android'
           next unless project[:android_application]
@@ -155,7 +162,7 @@ class Analyzer
 
       referred_projects.each do |referred_project|
         command = build_commands(config, platform, project_type_filter, referred_project[:id])
-        build_commands.concat(command) unless command.nil?  
+        build_commands.concat(command) unless command.nil?
       end
 
       build_commands << mdtool_build_command('build', project_configuration, @solution[:path], project[:name]).join(' ')
