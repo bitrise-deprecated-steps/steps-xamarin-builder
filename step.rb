@@ -206,11 +206,16 @@ builder = Builder.new(options[:project], options[:configuration], options[:platf
 begin
   builder.build
 rescue => ex
-  fail_with_message("Build failed: #{ex}")
+  error_with_message(ex.inspect.to_s)
+  error_with_message('--- Stack trace: ---')
+  error_with_message(ex.backtrace.to_s)
+  exit(1)
 end
 
 
 output = builder.generated_files
+
+fail_with_message('no output generated') if output.nil? || output.empty?
 
 output.each do |_, project_output|
   if project_output[:apk]
