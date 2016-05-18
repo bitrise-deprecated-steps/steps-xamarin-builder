@@ -3,7 +3,7 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
   envs:
-  - XAMARIN_PROJECT: $XAMARIN_PROJECT
+  - BITRISE_PROJECT_PATH: $BITRISE_PROJECT_PATH
   - BITRISE_XAMARIN_CONFIGURATION: $BITRISE_XAMARIN_CONFIGURATION
   - BITRISE_XAMARIN_PLATFORM: $BITRISE_XAMARIN_PLATFORM
 
@@ -17,10 +17,6 @@ workflows:
         - path: ./_tmp
     - path::./:
         title: Step test
-        inputs:
-        - xamarin_project: $XAMARIN_PROJECT
-        - xamarin_configuration: $BITRISE_XAMARIN_CONFIGURATION
-        - xamarin_platform: $BITRISE_XAMARIN_PLATFORM
     - script:
         title: Output test
         inputs:
