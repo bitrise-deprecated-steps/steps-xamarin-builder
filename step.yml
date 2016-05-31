@@ -37,37 +37,62 @@ inputs:
       title: "Platform filter"
       description: |
         Filters which platform to build.
-        Leave it empty to build both android and ios.
-      value_options:
-      - "ios"
-      - "android"
-      - "ios,android"
+        Comma separated list of platforms to build.
+
+        Available platforms:
+        * ios
+        * android
+        * mac
+
+        Format examples:
+        * mac
+        * android
+        * ios,android,mac
   - export_options_path:
     opts:
-      title: "Export options path"
+      title: "Export options path - used for iOS & OS X projects"
       description: |-
-        Used for Xcode version 7 and above.
+        Export options path - used for iOS & OS X projects.
 
         Specifies a path to a plist file that configures archive exporting.
-        If empty, step generates these options based on provisioning profile,
-        with default values.
+        If empty, step generates these options.
 
-        Auto generated export options available for export methods:
+        Auto generated export options available for iOS export methods:
         - app-store
         - ad-hoc
         - enterprise
         - development
 
-        If step doesn't find export method based on provisioning profile, development will be use.
+        See `xcodebuild -help` for more information.
+  - export_method: "development"
+    opts:
+      title: "Export method - used for OS X projects"
+      description: |-
+        Export method - used for OS X projects.
 
-        Call xcodebuild -help for available export options.
+        The method for exporting used in `exportOptions` plist.
+
+        `none` means no resigning during export.
+
+        See `xcodebuild -help` for more information.
+      value_options:
+        - "app-store"
+        - "development"
+        - "developer-id"
+        - "none"
 outputs:
   - BITRISE_APK_PATH: ""
     opts:
-      title: "Path of the generated APK"
+      title: The created android .APK file's path
   - BITRISE_IPA_PATH:
     opts:
-      title: The created .ipa file's path
+      title: The created iOS .ipa file's path
   - BITRISE_DSYM_PATH:
     opts:
-      title: The created .dSYM.zip file's path
+      title: The created iOS .dSYM.zip file's path
+  - BITRISE_APP_PATH:
+    opts:
+      title: The created OSX .app file's path
+  - BITRISE_PKG_PATH:
+    opts:
+      title: The created OS X .pkg file's path

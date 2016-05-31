@@ -17,6 +17,7 @@ workflows:
         run_if: true
         inputs:
         - path: ./_tmp
+    - nuget-restore:
     - path::./:
         title: Step test
     - script:
@@ -26,6 +27,8 @@ workflows:
             echo "BITRISE_APK_PATH: ${BITRISE_APK_PATH}"
             echo "BITRISE_IPA_PATH: ${BITRISE_IPA_PATH}"
             echo "BITRISE_DSYM_PATH: ${BITRISE_DSYM_PATH}"
+            echo "BITRISE_APP_PATH: ${BITRISE_APP_PATH}"
+            echo "BITRISE_PKG_PATH: ${BITRISE_PKG_PATH}"
 
   # ----------------------------------------------------------------
   # --- workflows to create Release

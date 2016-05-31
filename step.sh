@@ -7,4 +7,5 @@ ruby "${THIS_SCRIPT_DIR}/step.rb" \
 	-c "${xamarin_configuration}" \
 	-l "${xamarin_platform}" \
 	-e "${export_options_path}" \
+	-m "${export_method}" \
 	-f "${platform_filter}"
