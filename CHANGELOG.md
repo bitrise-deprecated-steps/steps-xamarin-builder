@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.2.0)
+## Changelog (Current version: 1.3.0)
 
 -----------------
+
+### 1.3.0 (2016 May 31)
+
+* [90bb776] prepare for release
+* [1bf49d1] Merge pull request #27 from bitrise-steplib/mac_support
+* [75cb4a0] mac support
 
 ### 1.2.0 (2016 May 18)
 
@@ -105,4 +111,4 @@
 
 -----------------
 
-Updated: 2016 May 18
+Updated: 2016 May 31
