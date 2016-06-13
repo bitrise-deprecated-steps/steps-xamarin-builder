@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.3.0)
+## Changelog (Current version: 1.3.1)
 
 -----------------
+
+### 1.3.1 (2016 Jun 13)
+
+* [a5f25c2] prepare for 1.3.1
+* [a81261f] Merge pull request #28 from bitrise-steplib/targets
+* [f26f7e8] build target support
 
 ### 1.3.0 (2016 May 31)
 
@@ -111,4 +117,4 @@
 
 -----------------
 
-Updated: 2016 May 31
+Updated: 2016 Jun 13
