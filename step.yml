@@ -1,14 +1,15 @@
-title: Xamarin builder
-summary: Xamarin builder
+title: Xamarin Builder
+summary: Xamarin Builder
 description: |-
-  Xamarin builder
+  Create an archive for your Xamarin application or build your Xamarin framework.
 website: https://github.com/bitrise-steplib/steps-xamarin-builder
 source_code_url: https://github.com/bitrise-steplib/steps-xamarin-builder
 support_url: https://github.com/bitrise-steplib/steps-xamarin-builder/issues
 host_os_tags:
   - osx-10.10
 project_type_tags:
-- xamarin
+  - build
+  - xamarin
 type_tags: []
 is_requires_admin_user: false
 is_always_run: false
@@ -16,23 +17,23 @@ is_skippable: false
 inputs:
   - xamarin_project: $BITRISE_PROJECT_PATH
     opts:
-      title: Path to Xamarin Solution
+      title: Path to the Xamarin Solution file
       description: |
-        Path to Xamarin Solution
+        The `.sln` path, relative to the the Working directory (if specified).
       is_required: true
   - xamarin_configuration: $BITRISE_XAMARIN_CONFIGURATION
     opts:
-      title: Xamarin project configuration
+      title: Xamarin solution configuration
       description: |
-        Xamarin project configuration
+        Xamarin solution configuration
       is_required: true
   - xamarin_platform: $BITRISE_XAMARIN_PLATFORM
     opts:
-      title: Xamarin platform
+      title: Xamarin solution platform
       description: |
-        Xamarin platform
+        Xamarin solution platform
       is_required: true
-  - platform_filter: "ios,android"
+  - platform_filter:
     opts:
       title: "Platform filter"
       description: |
@@ -64,7 +65,7 @@ inputs:
         - development
 
         See `xcodebuild -help` for more information.
-  - export_method: "development"
+  - export_method: "none"
     opts:
       title: "Export method - used for OS X projects"
       description: |-

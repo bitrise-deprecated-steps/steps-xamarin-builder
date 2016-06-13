@@ -167,7 +167,7 @@ def export_osx_xcarchive(archive_path, export_options, export_method)
     app_name = File.basename(tmp_app_path)
     app_path = File.join(@deploy_dir, app_name)
 
-    FileUtils.cp(tmp_app_path, app_path)
+    FileUtils.cp_r(tmp_app_path, app_path)
   end
 
   env_key = 'BITRISE_APP_PATH'
