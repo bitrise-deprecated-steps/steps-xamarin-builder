@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.3.1)
+## Changelog (Current version: 1.3.2)
 
 -----------------
+
+### 1.3.2 (2016 Jun 14)
+
+* [fb1ffc8] prepare for 1.3.2
+* [07390bc] Merge pull request #29 from bitrise-steplib/ipa_name
+* [8eaaee7] ipa name fix
 
 ### 1.3.1 (2016 Jun 13)
 
@@ -117,4 +123,4 @@
 
 -----------------
 
-Updated: 2016 Jun 13
+Updated: 2016 Jun 14
