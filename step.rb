@@ -232,10 +232,14 @@ def export_ios_xcarchive(archive_path, export_options)
   success = system(export_command.join(' '))
   log_fail('Failed to export IPA') unless success
 
+  app_paths = Dir[File.join(archive_path, 'Products', 'Applications', '*.app')]
+  ipa_name = app_paths.count.eql?(1) ? "#{File.basename(app_paths.first, '.app')}.ipa" : nil
+
   temp_ipa_path = Dir[File.join(temp_dir, '*.ipa')].first
   log_fail('No generated IPA found') unless temp_ipa_path
 
-  ipa_name = File.basename(temp_ipa_path)
+  ipa_name = File.basename(temp_ipa_path) unless ipa_name
+
   ipa_path = File.join(@deploy_dir, ipa_name)
   FileUtils.cp(temp_ipa_path, ipa_path)
 
