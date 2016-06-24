@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.3.2)
+## Changelog (Current version: 1.3.3)
 
 -----------------
+
+### 1.3.3 (2016 Jun 24)
+
+* [0f38430] prepare for v1.3.3
+* [656e989] Merge pull request #31 from bitrise-steplib/archive_path_fix
+* [20bff4e] depman update
 
 ### 1.3.2 (2016 Jun 14)
 
@@ -123,4 +129,4 @@
 
 -----------------
 
-Updated: 2016 Jun 14
+Updated: 2016 Jun 24
