@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.3.3)
+## Changelog (Current version: 1.3.4)
 
 -----------------
+
+### 1.3.4 (2016 Jun 28)
+
+* [25b0b03] prepare for 1.3.4
+* [4822f47] Merge pull request #32 from bitrise-steplib/project_type_guids_fix
+* [1fe61ad] project type guids fix
 
 ### 1.3.3 (2016 Jun 24)
 
@@ -129,4 +135,4 @@
 
 -----------------
 
-Updated: 2016 Jun 24
+Updated: 2016 Jun 28
