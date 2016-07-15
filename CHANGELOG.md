@@ -1,6 +1,12 @@
-## Changelog (Current version: 1.3.4)
+## Changelog (Current version: 1.3.5)
 
 -----------------
+
+### 1.3.5 (2016 Jul 15)
+
+* [57de0c2] prepare for 1.3.5
+* [6621fa0] Merge pull request #33 from bitrise-steplib/fix
+* [7cfc623] builder update
 
 ### 1.3.4 (2016 Jun 28)
 
@@ -135,4 +141,4 @@
 
 -----------------
 
-Updated: 2016 Jun 28
+Updated: 2016 Jul 15
