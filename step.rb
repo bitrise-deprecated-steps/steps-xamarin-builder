@@ -341,6 +341,9 @@ output.each do |_, project_output|
 end
 
 unless any_output_exported
-  puts "generated_files: #{output}"
-  log_fail 'No exportable output found'
+  puts '--- Generated outputs: ---'
+  puts output.to_s
+
+  log_error 'Step is expected to generate Android .APK, iOS .IPA or MAC .app/.pkg file'
+  log_fail 'No expected output found'
 end
