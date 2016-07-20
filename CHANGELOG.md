@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.3.5)
+## Changelog (Current version: 1.3.6)
 
 -----------------
+
+### 1.3.6 (2016 Jul 20)
+
+* [144712a] prepare for 1.3.6
+* [1dda10e] no expected output explanation (#34)
 
 ### 1.3.5 (2016 Jul 15)
 
@@ -141,4 +146,4 @@
 
 -----------------
 
-Updated: 2016 Jul 15
+Updated: 2016 Jul 20
