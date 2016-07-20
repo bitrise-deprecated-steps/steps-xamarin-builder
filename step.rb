@@ -344,6 +344,7 @@ unless any_output_exported
   puts '--- Generated outputs: ---'
   puts output.to_s
 
-  log_error 'Step is expected to generate Android .APK, iOS .IPA or MAC .app/.pkg file'
+  log_error 'Step is expected to generate Android .apk, iOS .ipa or MAC .app/.pkg file'
+  log_error 'Ensure your `xamarin_configuration` and `xamarin_platform` is expected to generate archive'
   log_fail 'No expected output found'
 end
