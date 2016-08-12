@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.3.6)
+## Changelog (Current version: 1.3.7)
 
 -----------------
+
+### 1.3.7 (2016 Aug 12)
+
+* [2c6eb27] prepare for 1.3.7
+* [1bec20f] xamarin builder update to 0.9.1 (#36)
 
 ### 1.3.6 (2016 Jul 20)
 
@@ -146,4 +151,4 @@
 
 -----------------
 
-Updated: 2016 Jul 20
+Updated: 2016 Aug 12
