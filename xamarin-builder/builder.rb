@@ -1,3 +1,5 @@
+require 'tmpdir'
+require 'open-uri'
 require_relative './analyzer'
 require_relative './common_constants'
 
@@ -87,7 +89,92 @@ class Builder
     end
   end
 
+  def run_nunit_lite_tests
+    touch_unit_server = get_touch_unit_server
+
+    logfile = 'tests.log'
+    test_commands, errors = @analyzer.nunit_light_test_commands(@configuration, @platform, touch_unit_server, logfile)
+
+    if test_commands.nil? || test_commands.empty?
+      errors = ['Failed to create test command'] if errors.empty?
+      raise errors.join("\n")
+    end
+
+    app_file = nil
+    test_commands.each do |test_command|
+      puts
+      puts "\e[34m#{test_command}\e[0m"
+      puts
+
+      command = test_command.join(' ')
+      command.sub! '--launchsim', "--launchsim #{app_file}" if command.include? touch_unit_server and !app_file.nil?
+
+      raise 'Test failed' unless system(command)
+
+      if command.include? 'mdtool'
+        @generated_files = @analyzer.collect_generated_files(@configuration, @platform, @project_type_filter)
+        @generated_files.each do |_, project_output|
+          app_file = project_output[:app] if project_output[:api] == Api::IOS and project_output[:app]
+        end
+      end
+    end
+
+    results = process_touch_unit_logs(logfile)
+
+    # remove logs file
+    FileUtils.remove_entry logfile
+
+    raise 'Test failed' if results['Failed'] != '0'
+  end
+
   def generated_files
     @generated_files
+  end
+
+  private
+
+  def get_touch_unit_server
+    # Use preinstalled Touch.Server.exe if exist
+    preinstalled_touch_unit_server = ENV['TOUCH_SERVER_PATH']
+    if preinstalled_touch_unit_server && !preinstalled_touch_unit_server.empty? && File.exist?(preinstalled_touch_unit_server)
+      return preinstalled_touch_unit_server
+    end
+
+    puts 'preinstalled Touch.Server.exe missing, downloading it...'
+
+    # Download Touch.Server.exe
+    touch_unit_server_pth = File.join(Dir.tmpdir, 'Touch.Server.exe')
+    touch_unit_server_url = 'https://github.com/bitrise-io/Touch.Unit/releases/download/0.9.0/Touch.Server.exe'
+
+    File.open(touch_unit_server_pth, 'wb') do |saved_file|
+      # the following "open" is provided by open-uri
+      open(touch_unit_server_url, 'rb') do |read_file|
+        saved_file.write(read_file.read)
+      end
+    end
+
+    touch_unit_server_pth
+  end
+
+  def process_touch_unit_logs(logs_path)
+    results = Hash.new
+    if File.exist?(logs_path)
+      File.open(logs_path, "r") do |f|
+        f.each_line do |line|
+          puts line
+          if line.start_with?('Tests run')
+            line.gsub (/[a-zA-z]*: [0-9]*/) { |s|
+              s.delete!(' ')
+              test_result = s.split(/:/)
+              results[test_result.first] = test_result.last
+            }
+          end
+        end
+      end
+    else
+      raise 'Cant find test logs file'
+    end
+
+    results
   end
 end
