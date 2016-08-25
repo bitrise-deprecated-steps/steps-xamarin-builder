@@ -25,7 +25,7 @@ class Builder
     @analyzer.analyze(@path)
   end
 
-  def build
+  def build(retry_on_hang = true)
     build_commands = @analyzer.build_commands(@configuration, @platform, @project_type_filter)
     if build_commands.empty?
       # No iOS or Android application found to build
@@ -40,7 +40,7 @@ class Builder
         puts "\e[34m#{build_command}\e[0m"
         puts
 
-        run_mdtool_in_diagnostic_mode(build_command)
+        run_mdtool_in_diagnostic_mode(build_command, retry_on_hang)
       else
         puts
         puts "\e[34m#{build_command}\e[0m"
@@ -68,27 +68,53 @@ class Builder
 
   MDTOOL_PATH = "\"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool\""
 
-  def run_mdtool_in_diagnostic_mode(mdtool_build_command)
+  def run_mdtool_in_diagnostic_mode(mdtool_build_command, retry_on_hang = true)
     pid = nil
+    timeout = false
 
-    timer = Timer.new(300) { # 5 minutes timeout
-      hijack_process(pid)
-    }
+    # force kill process if kill -QUIT does not stops it
+    force_timer = Timer.new(60) do
+      puts
+      puts "\e[33mForce terminating...\e[0m"
 
-    Open3.popen3(mdtool_build_command.join(' ')) do |stdin, stdout, stderr, wait_thr|
-      pid = wait_thr.pid # pid of the started process.
+      Process.kill('SIGKILL', pid)
+    end
+
+    # kill process if hangs on Loading projects...
+    timer = Timer.new(300) do
+      timeout = true
+
+      puts
+      puts "\e[33mCommand timed out, terminating...\e[0m"
+
+      force_timer.start
+
+      Process.kill('QUIT', pid)
+    end
+
+    Open3.popen3(mdtool_build_command.join(' ')) do |_, stdout, _, wait_thr|
+      pid = wait_thr.pid
 
       stdout.each do |line|
         puts line
 
         timer.stop if timer.running?
-        timer.start if line.include? "Loading projects"
+        timer.start if line.include? 'Loading projects'
       end
     end
-  end
 
-  def hijack_process(process_id)
-    puts `kill -QUIT #{process_id}`
+    force_timer.stop
+
+    if timeout
+      raise 'Command timed out' unless retry_on_hang
+
+      puts
+      puts "\e[33mRertying command:\e[0m"
+      puts "\e[34m#{mdtool_build_command}\e[0m"
+      puts
+
+      run_mdtool_in_diagnostic_mode(mdtool_build_command, false)
+    end
   end
 
   def build_solution
