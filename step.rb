@@ -307,9 +307,12 @@ log_fail('No platform environment found') unless options[:platform]
 
 #
 # Main
+allow_retry_on_hang = true
+allow_retry_on_hang = false if ENV['BITRISE_ALLOW_MDTOOL_COMMAND_RETRY'] == 'false'
+
 builder = Builder.new(options[:project], options[:configuration], options[:platform], options[:platform_filter])
 begin
-  builder.build
+  builder.build(allow_retry_on_hang)
 rescue => ex
   log_error(ex.inspect.to_s)
   log_error('--- Stack trace: ---')
@@ -318,8 +321,6 @@ rescue => ex
 end
 
 output = builder.generated_files
-
-log_fail('no output generated') if output.nil? || output.empty?
 
 any_output_exported = false
 

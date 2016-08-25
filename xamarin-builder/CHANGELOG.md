@@ -1,6 +1,16 @@
-## Changelog (Current version: 0.9.1)
+## Changelog (Current version: 0.9.3)
 
 -----------------
+
+### 0.9.3 (2016 Aug 25)
+
+* [f939aae] prepare for 0.9.3
+* [9ac04fd] force kill process (#40)
+
+### 0.9.2 (2016 Aug 24)
+
+* [02f7233] prepare for 0.9.2
+* [399f0d3] Mdtool hang rebase (#39)
 
 ### 0.9.1 (2016 Aug 05)
 
@@ -11,4 +21,4 @@
 
 -----------------
 
-Updated: 2016 Aug 05
+Updated: 2016 Aug 25
