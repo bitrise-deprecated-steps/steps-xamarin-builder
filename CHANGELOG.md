@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.3.7)
+## Changelog (Current version: 1.4.0)
 
 -----------------
+
+### 1.4.0 (2016 Aug 25)
+
+* [77ab66c] prepare for 1.4.0
+* [23c4cf4] Mdtool hang (#39)
 
 ### 1.3.7 (2016 Aug 12)
 
@@ -151,4 +156,4 @@
 
 -----------------
 
-Updated: 2016 Aug 12
+Updated: 2016 Aug 25
