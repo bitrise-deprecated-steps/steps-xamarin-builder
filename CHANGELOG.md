@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.4.0)
+## Changelog (Current version: 1.4.1)
 
 -----------------
+
+### 1.4.1 (2016 Sep 13)
+
+* [40a29aa] prepare for 1.4.1
+* [041d60f] depman update (#40)
 
 ### 1.4.0 (2016 Aug 25)
 
@@ -156,4 +161,4 @@
 
 -----------------
 
-Updated: 2016 Aug 25
+Updated: 2016 Sep 13
