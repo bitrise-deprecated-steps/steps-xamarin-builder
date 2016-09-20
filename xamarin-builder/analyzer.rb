@@ -813,10 +813,10 @@ class Analyzer
 
     command = [
       MDTOOL_PATH,
+      '--verbose',
       action,
       "\"-c:#{mdtool_configuration(project_configuration)}\"",
-      "\"#{solution}\"",
-      '--verbose'
+      "\"#{solution}\""
     ]
     command << "\"-p:#{project}\"" if project
     return command
