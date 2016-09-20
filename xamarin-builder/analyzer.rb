@@ -815,7 +815,8 @@ class Analyzer
       MDTOOL_PATH,
       action,
       "\"-c:#{mdtool_configuration(project_configuration)}\"",
-      "\"#{solution}\""
+      "\"#{solution}\"",
+      '--verbose'
     ]
     command << "\"-p:#{project}\"" if project
     return command
