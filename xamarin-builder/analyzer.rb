@@ -171,7 +171,8 @@ class Analyzer
           build_command = [
               'xbuild',
               sign_android ? '/t:SignAndroidPackage' : '/t:PackageForAndroid',
-              "/p:Configuration=\"#{project_config}\""
+              "/p:Configuration=\"#{project_config}\"",
+              "/p:SolutionDir=#{File.dirname(@solution[:path])}"
           ]
           build_command << "/p:Platform=\"#{project_platform}\"" unless project_platform.eql?("AnyCPU")
           build_command << "\"#{project[:path]}\""
@@ -428,7 +429,7 @@ class Analyzer
         elsif package_name
           full_output_path = export_artifact(package_name, full_output_dir, '.apk')
         end
- 
+
         full_output_path = export_artifact('*', full_output_dir, '.apk') unless full_output_path
 
         outputs_hash[project[:id]] = {}
