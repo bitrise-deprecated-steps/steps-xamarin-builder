@@ -1,7 +1,6 @@
 # Xamarin Builder
 
-__WARNING:
-This step is deprecated, use [xamarin-archive](https://github.com/bitrise-io/bitrise-steplib/tree/master/steps/xamarin-archive) step instead.__ 
+__WARNING: This step is deprecated, use [xamarin-archive](https://github.com/bitrise-io/bitrise-steplib/tree/master/steps/xamarin-archive) step instead.__ 
 More info at - http://blog.bitrise.io/2016/10/18/the-new-xamarin-archive-step.html
 Will be removed by 2017-08-01.
 
