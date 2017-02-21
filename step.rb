@@ -43,6 +43,9 @@ def log_fail(message)
   exit(1)
 end
 
+puts
+log_error('This step is deprecated, use xamarin-archive step instead. Will be removed by: 2017-08-01.')
+
 def export_dsym(archive_path)
   log_info("Exporting dSYM from archive at path #{archive_path}")
 
