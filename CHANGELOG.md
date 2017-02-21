@@ -1,6 +1,11 @@
-## Changelog (Current version: 1.4.1)
+## Changelog (Current version: 1.4.2)
 
 -----------------
+
+### 1.4.2 (2017 Feb 21)
+
+* [a2621f3] Prepare for 1.4.2
+* [62751ce] Deprecated message (#44)
 
 ### 1.4.1 (2016 Sep 13)
 
@@ -161,4 +166,4 @@
 
 -----------------
 
-Updated: 2016 Sep 13
+Updated: 2017 Feb 21
